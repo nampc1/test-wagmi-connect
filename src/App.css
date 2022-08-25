@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.connect-btn {
+  padding: 15px;
+  color: white;
+  background-color: blue;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.account-info {
+  margin-bottom: 20px;
+}

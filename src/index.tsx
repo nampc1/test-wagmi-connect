@@ -3,13 +3,33 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {configureChains, createClient, defaultChains, WagmiConfig} from "wagmi";
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import {SubWalletConnector} from "./wagmi-connector";
+
+const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+    alchemyProvider(),
+])
+
+const client = createClient({
+    autoConnect: true,
+    provider,
+    webSocketProvider,
+    connectors: [
+        new SubWalletConnector({
+            chains
+        })
+    ]
+})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+      <WagmiConfig client={client} >
+          <App />
+      </WagmiConfig>
   </React.StrictMode>
 );
 
