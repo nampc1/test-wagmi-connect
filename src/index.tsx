@@ -3,34 +3,37 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {configureChains, createClient, defaultChains, WagmiConfig} from "wagmi";
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import {SubWalletConnector} from "./wagmi-connector";
+import {configureChains, createConfig, WagmiConfig} from "wagmi";
+import { mainnet } from 'wagmi/chains'
+import { publicProvider } from 'wagmi/providers/public'
+import {SubWalletConnector} from "@subwallet/wagmi-connector";
 
-const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
-    alchemyProvider(),
-])
+const {chains, publicClient, webSocketPublicClient} = configureChains(
+    [mainnet],
+    [publicProvider()]
+)
 
-const client = createClient({
+export const config = createConfig({
     autoConnect: true,
-    provider,
-    webSocketProvider,
+    publicClient,
+    webSocketPublicClient,
+    logger: {
+        warn: null,
+    },
     connectors: [
-        new SubWalletConnector({
-            chains
-        })
-    ]
+        new SubWalletConnector({ chains }),
+    ],
 })
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-      <WagmiConfig client={client} >
-          <App />
-      </WagmiConfig>
-  </React.StrictMode>
+    <React.StrictMode>
+        <WagmiConfig config={config}>
+            <App/>
+        </WagmiConfig>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
